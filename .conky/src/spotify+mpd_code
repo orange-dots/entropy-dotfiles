@@ -1,0 +1,13 @@
+# spotify
+${font Ubuntu:size=8:style=bold}${color4}[ MEDIA ] ${hr 2}
+${if_running spotify}
+${offset 15}${font Ubuntu:size=8}${color1}Song: ${color}${execi 3 dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.freedesktop.DBus.Properties.Get string:'org.mpris.MediaPlayer2.Player' string:'Metadata'|egrep -A 1 "title"|egrep -v "title"|cut -b 44-|cut -d '"' -f 1|egrep -v ^$ }
+${voffset 10}${offset 15}${color1}Artist: ${color}${execi 3 dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.freedesktop.DBus.Properties.Get string:'org.mpris.MediaPlayer2.Player' string:'Metadata'|egrep -A 2 "artist"|egrep -v "artist"|egrep -v "array"|cut -b 27-|cut -d '"' -f 1|egrep -v ^$ }#$font
+${else}
+${if_mpd_playing}
+${voffset -12}${offset 76}${font Ubuntu:size=8}${color1}Song: ${color}${mpd_title 40}
+${voffset 7}${offset 76}${color1}Artist: ${color}${mpd_artist 40}
+${voffset 7}${offset 76}${color1}Album: ${color}${mpd_album 40}${font}
+${voffset 7}${offset 78}${color1}${font Ubuntu:size=8}$mpd_elapsed/$mpd_length $color${goto 151}${mpd_bar 5,170}$font
+${else}${voffset 7}${offset 79}${font Ubuntu:size=8}Mpd & Spotify:			${color1}off${color}
+${endif}${endif}

@@ -1,0 +1,139 @@
+conky.config = {
+
+	background = true,
+	update_interval = 1,
+
+	cpu_avg_samples = 2,
+	net_avg_samples = 2,
+	temperature_unit = 'celsius',
+
+	double_buffer = true,
+	no_buffers = true,
+	text_buffer_size = 2048,
+
+	gap_x = 10,
+	gap_y = 70,
+	minimum_width = 200, minimum_height = 900,
+	maximum_width = 350,
+	own_window = true,
+	own_window_type = 'override',
+	own_window_transparent = true,
+	own_window_argb_visual = true,
+
+	own_window_type = 'normal',
+	own_window_class = 'conky-semi',
+	own_window_hints = 'undecorated,sticky,skip_taskbar,skip_pager,below',
+	border_inner_margin = 0,
+	border_outer_margin = 0,
+	alignment = 'top_right',
+
+
+	draw_shades = false,
+	draw_outline = false,
+	draw_borders = false,
+	draw_graph_borders = false,
+
+	override_utf8_locale = true,
+	use_xft = true,
+	font = 'caviar dreams:size=8',
+	xftalpha = 0.5,
+	uppercase = false,
+
+-- Defining colors
+	default_color = '#825e49',
+-- Shading
+	color1 = '#a87757',
+	color2 = '#7f5a40',
+	color3 = '#7c6e65',
+-- Headers
+	color4 = '#825e49',
+-- Positive
+	color5 = '#94954d',
+-- Negative
+	color6 = '#da4320',
+-- Loading lua script for drawning rings
+	lua_load = 'lua/sepia.lua',
+	lua_draw_hook_pre = 'main',
+
+}; 
+
+--${offset 15}${font Ubuntu:size=8:style=normal}${color1}${pre_exec lsb_release -d | cut -f 2} - $sysname $kernel
+conky.text = [[
+${font Ubuntu:size=8:style=bold}${color4}[ SYSTEM ]${hr 2}
+${offset 15}${font Ubuntu:size=8:style=normal}${color1}$sysname $kernel @henriette ${alignr}updates: ${color3}${execi 28800 bin/updatecheck.sh}
+#${offset 15}${font Ubuntu:size=8:style=normal}${color1}Battery:  ${color3}${battery_bar 5,150 BAT0} ${color3}${battery_percent BAT0}%
+${offset 15}${font Ubuntu:size=8:style=normal}${color1}Uptime: ${color3}${goto 70}$uptime
+${offset 15}${font Ubuntu:size=8:style=normal}${color1}Load: ${color3}${goto 70}${loadavg 1, 2, 3}${alignr}${font Ubuntu:size=8:style=bold}${color1}AMD FX(tm)-8350 Eight Core CPU
+${offset 15}${font Ubuntu:size=8:style=normal}${color1}Processes: ${color3}${goto 70}${running_processes}/${processes}
+${offset 250}${color1}${font Ubuntu:size=8:style=bold}Freq: ${alignr}${font Ubuntu:size=8:style=normal}${color3}$freq MHz
+${offset 250}${color1}${font Ubuntu:size=8:style=bold}Temp: ${alignr}${font Ubuntu:size=8:style=normal}${color3}${hwmon 0 temp 1} °C
+#${alignr}${font Ubuntu:size=8:style=normal}${color1}Fan: ${color3}${hwmon 0 fan 1} RPM
+${alignr}${font Ubuntu:size=8:style=bold}${color1}NVIDIA GeForce GTX 960
+${offset 250}${color1}${font Ubuntu:size=8:style=bold}Freq: ${alignr}${font Ubuntu:size=8:style=normal}${color3}${color3}${nvidia gpufreq} MHz
+${offset 250}${color1}${font Ubuntu:size=8:style=bold}Temp: ${alignr}${font Ubuntu:size=8:style=normal}${color3}${nvidia temp} °C
+
+# CPU
+${voffset -30}
+${offset 125}${cpugraph cpu0 40,220 7f5a40 a87757 -0.5 -l}${voffset -20}
+${offset 75}${font Ubuntu:size=8:style=bold}${color3}CPU
+# Showing TOP 5 CPU-consumers
+${offset 125}${font Ubuntu:size=8:style=normal}${color4}${top name 1}${alignr}${top cpu 1}%
+${offset 125}${font Ubuntu:size=8:style=normal}${color1}${top name 2}${alignr}${top cpu 2}%
+${offset 125}${font Ubuntu:size=8:style=normal}${color2}${top name 3}${alignr}${top cpu 3}%
+${offset 125}${font Ubuntu:size=8:style=normal}${color3}${top name 4}${alignr}${top cpu 4}%
+${offset 125}${font Ubuntu:size=8:style=normal}${color3}${top name 5}${alignr}${top cpu 5}%
+
+# MEM
+${voffset -15}
+${offset 200}swap${alignr}$swap/$swapmax
+${offset 200}${swapbar}
+${voffset -20}
+${offset 75}${font Ubuntu:size=8:style=bold}${color3}MEM
+${offset 125}${font Ubuntu:size=8:style=normal}${color4}${top_mem name 1}${alignr}${top_mem mem_res 1}
+${offset 125}${font Ubuntu:size=8:style=normal}${color1}${top_mem name 2}${alignr}${top_mem mem_res 2}
+${offset 125}${font Ubuntu:size=8:style=normal}${color2}${top_mem name 3}${alignr}${top_mem mem_res 3}
+${offset 125}${font Ubuntu:size=8:style=normal}${color3}${top_mem name 4}${alignr}${top_mem mem_res 4}
+${offset 125}${font Ubuntu:size=8:style=normal}${color3}${top_mem name 4}${alignr}${top_mem mem_res 5}
+
+# DISKS
+${font Ubuntu:size=8:style=bold}${color4}[ DISKS ] ${hr 2}
+${offset 15}${diskiograph 40,335 7f5a40 a87757}${voffset -30}
+${voffset 15}
+${offset 15}${voffset 5}${color2}/root $alignc ${fs_used /} / ${fs_size /} $alignr ${fs_free_perc /}%
+${offset 15}${fs_bar /}
+${alignr}${font Ubuntu:size=6:style=normal}${color3}${voffset -5}${execi 1 sudo hddtemp /dev/sda|sed 's%/dev/sda: %%' }
+${offset 15}${color2}${font Ubuntu:size=8:style=normal}/home $alignc ${fs_used /home} / ${fs_size /home} $alignr ${fs_free_perc /home}%
+${offset 15}${fs_bar /home}
+${alignr}${font Ubuntu:size=6:style=normal}${voffset -5}${color3}
+${offset 15}${color2}${font Ubuntu:size=8:style=normal}/win10 $alignc ${fs_used /mnt/win10} / ${fs_size /mnt/win10} $alignr ${fs_free_perc /mnt/win10}%
+${offset 15}${fs_bar /mnt/win10}
+${alignr}${font Ubuntu:size=6:style=normal}${voffset -5}${color3}${execi 1 sudo hddtemp /dev/sdc|sed 's%/dev/sdc: %%' }
+${offset 15}${color2}${font Ubuntu:size=8:style=normal}/nfs $alignc ${fs_used /mnt/share} / ${fs_size /mnt/share} $alignr ${fs_free_perc /mnt/share} %
+${offset 15}${fs_bar /mnt/share}
+
+# Network data 
+${font Ubuntu:size=8:style=bold}${color4}[ NETWORK ] ${addr enp2s0} ${hr 2}
+#${offset 180}${font Ubuntu:size=8:style=bold}${color1}Lan IP: ${alignr}$color3${addr enp2s0} 
+${offset 180}${font Ubuntu:size=8:style=bold}${color1}Ext IP: ${alignr}$color3${execi 3600 wget -q -O /dev/stdout http://checkip.dyndns.org/ | cut -d : -f 2- | cut -d \< -f -1}  
+           
+${offset 15}${color1}${font ubuntu:size=8:style=bold}Up: ${font Ubuntu:size=8:style=normal}$color2${upspeed enp2s0} / ${totalup enp2s0}${goto 180}${color1}${font Ubuntu:size=8:style=bold}Down: ${font Ubuntu:size=8:style=normal}$color2${downspeed enp2s0} / ${totaldown enp2s0}
+${offset 15}${upspeedgraph enp2s0 40,160 7f5a40 a87757 1280KiB -l}${goto 180}${downspeedgraph enp2s0 40,160 7f5a40 a87757 1280KiB -l}
+
+# Nagios
+${font Ubuntu:size=8:style=bold}${color4}[ NAGIOS ] ${hr 2}
+${offset 15}${font Ubuntu:size=8:style=normal}${color3}${execpi 60 bin/nagiosmon.sh}
+
+${offset 15}${color1}${font Ubuntu:size=8:style=bold}FW ES: ${goto 70}${font Ubuntu:size=8:style=normal}${color3}${execpi 60 bin/nagiospagemon.sh fw01es}${goto 180}${color1}${font Ubuntu:size=8:style=bold}FW DO: ${goto 250}${font Ubuntu:size=8:style=normal}${color3}${execpi 60 bin/nagiospagemon.sh fw01do}
+${offset 15}${color1}${font Ubuntu:size=8:style=bold}· server01: ${goto 70}${font Ubuntu:size=8:style=normal}${color3}${execpi 55 bin/nagiospagemon.sh server01}${goto 180}${color1}${font Ubuntu:size=8:style=bold}· server03: ${goto 250}${font Ubuntu:size=8:style=normal}${color3}${execpi 55 bin/nagiospagemon.sh server01}
+${offset 15}${color1}${font Ubuntu:size=8:style=bold}· server02: ${goto 70}${font Ubuntu:size=8:style=normal}${color3}${execpi 55 bin/nagiospagemon.sh server02}${goto 180}${color1}${font Ubuntu:size=8:style=bold}· server07: ${goto 250}${font Ubuntu:size=8:style=normal}${color3}${execpi 55 bin/nagiospagemon.sh server07}
+${offset 15}${color1}${font Ubuntu:size=8:style=bold}· server04: ${goto 70}${font Ubuntu:size=8:style=normal}${color3}${execpi 55 bin/nagiospagemon.sh server04}${goto 180}${color1}${font Ubuntu:size=8:style=bold}· server08: ${goto 250}${font Ubuntu:size=8:style=normal}${color3}${execpi 55 bin/nagiospagemon.sh server08}
+${offset 15}${color1}${font Ubuntu:size=8:style=bold}· server05: ${goto 70}${font Ubuntu:size=8:style=normal}${color3}${execpi 55 bin/nagiospagemon.sh server05}${goto 180}${color1}${font Ubuntu:size=8:style=bold}· server09: ${goto 250}${font Ubuntu:size=8:style=normal}${color3}${execpi 55 bin/nagiospagemon.sh server09}
+${offset 15}${color1}${font Ubuntu:size=8:style=bold}· mail: ${goto 70}${font Ubuntu:size=8:style=normal}${color3}${execpi 55 bin/nagiospagemon.sh mail}${goto 180}${color1}${font Ubuntu:size=8:style=bold}· server10: ${goto 250}${font Ubuntu:size=8:style=normal}${color3}${execpi 55 bin/nagiospagemon.sh server10}
+${goto 180}${color1}${font Ubuntu:size=8:style=bold}· server11: ${goto 250}${font Ubuntu:size=8:style=normal}${color3}${execpi 55 bin/nagiospagemon.sh server11}
+${goto 180}${color1}${font Ubuntu:size=8:style=bold}· server12: ${goto 250}${font Ubuntu:size=8:style=normal}${color3}${execpi 55 bin/nagiospagemon.sh server12}
+${goto 180}${color1}${font Ubuntu:size=8:style=bold}· server13: ${goto 251}${font Ubuntu:size=8:style=normal}${color3}${execpi 55 bin/nagiospagemon.sh server13}
+${goto 180}${color1}${font Ubuntu:size=8:style=bold}· server14: ${goto 250}${font Ubuntu:size=8:style=normal}${color3}${execpi 55 bin/nagiospagemon.sh server14}
+
+# Virtual Machines
+${font Ubuntu:size=8:style=bold}${color4}[ VIRTUAL MACHINES ${execpi 30 ~/Documents/.conky/bin/vms_active.sh}/${execpi 72000 ~/Documents/.conky/bin/vms_all.sh}] ${hr 2}
+]];
